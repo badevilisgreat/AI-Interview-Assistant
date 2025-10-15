@@ -1,29 +1,35 @@
 name: Build macOS App
 
 on:
-  workflow_dispatch: # lets you trigger manually
+  # Trigger build manually or whenever you push to the main branch
+  workflow_dispatch:
   push:
-    branches: [ main ] # auto-run when you push to main
+    branches: [ main ]
 
 jobs:
   build-macos:
     runs-on: macos-latest
 
     steps:
+      # 1️⃣ Checkout your code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js (required for npm & Electron Forge)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # 3️⃣ Install dependencies from package.json
       - name: Install dependencies
         run: npm install
 
+      # 4️⃣ Build your app for macOS (.dmg / .app)
       - name: Build macOS app
         run: npm run make -- --platform=darwin
 
+      # 5️⃣ Upload the build output as a downloadable artifact
       - name: Upload built app
         uses: actions/upload-artifact@v4
         with:
